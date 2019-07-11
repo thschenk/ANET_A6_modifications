@@ -132,7 +132,8 @@ difference(){
       // 30-1.9-2.4-2.1 = 23.6, xEnd-Dicke= 26, Mutter bündig, Schraube 2.1 länger
       // 25-1.9-2.4 = 20.7, xEnd-Dicke= 26, Mutter 2.9 tiefer, Schraube bündig
       //bearing_LMEK8(30-1.9-2.4-2,5+22+4.0);
-      bearing_LMEK8(25-1.9-2.4-.2,32);
+      //bearing_LMEK8(25-1.9-2.4-.2,32);
+      bearing_LMH8(15-1-2.4);
    
   //lead_screw_nut
   translate([-41.5,10,27.5+23])
@@ -141,7 +142,8 @@ difference(){
       // 25-3.5-2.4-1.5 = 17.6, xEnd-Dicke=20, Mutter bündig, Schraube 1.5 länger
       // 22-3.5-2.4 = 16.1, xEnd-Dicke=20, Mutter 1.5 tiefer, Schraube bündig
       //lead_screw_nut(9.5,25-3.5-2.4-0.5,21.6);
-      lead_screw_nut(9.5,22-3.5-2.4-.2,26);
+      //lead_screw_nut(9.5,22-3.5-2.4-.2,26);
+      lead_screw_nut(9.5, 15-3.6-2.4);
    
   //belt hole  
   translate([-62.75,-2.236,6])
@@ -154,8 +156,7 @@ difference(){
   //material savings
   mirror()
     material_saving(5);  
-  
-    
+
   //oshw-Logo
   translate([-10,10+2-1.5,32])
     rotate([90,-90,0])

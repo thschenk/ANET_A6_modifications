@@ -74,7 +74,33 @@ module bearing_LMEK8(thickness,bevel){
     }
   }
 
-module lead_screw_nut(hole,thickness,bevel){
+// Bearing LMH8LUU (A6 default)
+module bearing_LMH8(thickness){
+  union(){
+    // flange
+    translate([0,0,-2.5])
+      intersection() {
+        cube([32,21,5], center=true);
+        cylinder(5,r=32/2, center=true, $fn=30);
+      }
+    // shaft
+    translate([0,0,-5])
+      pushfit_hole(45,15+.1,60,0.3);
+    // screws
+    for (i=[0:1])
+      rotate([0,0,90+i*180]){
+        translate([0,12,-5])
+          //cylinder(22+5+4.5+1+1, r=1.6, center=false, $fn=30);
+          polyhole(45, 1.6, center = false); // all the way through
+        translate([0,12,thickness]) // hex nut
+          cylinder(40-thickness, r=5.8/2/cos(30), center=false, $fn=6);
+        translate([0,12,thickness + 3])
+          cylinder(45-thickness, r=7/2, center=false, $fn=6);
+      }
+    }
+  }
+
+module lead_screw_nut(hole,thickness){
   union(){
     translate([0,0,-10]){
       polyhole(22, 10.2/2, center = false);
@@ -90,8 +116,8 @@ module lead_screw_nut(hole,thickness,bevel){
         translate([0,8,thickness])
           // Hex Nut 5.5mm
           cylinder(40-thickness, r=5.8/2/cos(30), center=false, $fn=6);
-        translate([0,8,bevel])
-          cylinder(4, r1=5.8/2/cos(30),r2=5.8/2/cos(30)+4,  center=false, $fn=6);
+        translate([0,8,thickness + 4])
+          cylinder(40-thickness, r=7/2,  center=false, $fn=6);
       }
     }
   }
@@ -137,7 +163,7 @@ module A6_X_end_left()
  
 //test:
   translate([-40,0,0])
-    bearing_LMEK8(20,25);
+    bearing_LMH8(20,25);
   translate([-70,0,0])
    lead_screw_nut(9,30,32);
   translate([-180,0,0])
@@ -153,17 +179,21 @@ difference(){
       // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
       // 30-1.9-2.4-2.1 = 23.6, xEnd-Dicke= 26, Mutter bündig, Schraube 2.1 länger
       // 25-1.9-2.4 = 20.7, xEnd-Dicke= 26, Mutter 2.9 tiefer, Schraube bündig, !!vorsicht, Mutter auf Höhe Riemenspanner
-      bearing_LMEK8(30-1.9-2.4-1.6,5+22+4.0);
-      //bearing_LMEK8(25-1.9-2.4,5+22+4.0);
-        
+      //bearing_LMH8(30-1.9-2.4-1.6,5+22+4.0);
+      //bearing_LMH8(25-1.9-2.4,5+22+4.0);
+      // Default A6 M3 19mm screw (15mm thread length)
+      bearing_LMH8(15-1-2.4, 5+22+4.0);
+
   //lead_screw_nut
   translate([41.5,10,27.5+23])
     rotate([90,0,0])
       // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
       // 25-3.5-2.4-1.5 = 17.6,  xEnd-Dicke=20, Mutter bündig, Schraube 1.5 länger
       // 22-3.5-2.4 = 16.1, xEnd-Dicke=20, Mutter 1.5 tiefer, Schraube bündig
-      //lead_screw_nut(9.5,25-3.5-2.4-0.5,21.6);
-      lead_screw_nut(9.5,22-3.5-2.4,21.6);
+      //lead_screw_nut(9.5, 25-3.5-2.4-0.5, 21.6);
+      //lead_screw_nut(9.5, 22-3.5-2.4, 21.6);
+      // Default A6 M3 19mm screw (15mm thread length)
+      lead_screw_nut(9.5, 15-3.6-2.4, 10);
   
   material_saving();
 }
