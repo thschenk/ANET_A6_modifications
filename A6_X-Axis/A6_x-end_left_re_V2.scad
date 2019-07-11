@@ -161,6 +161,7 @@ difference(){
     rotate([90,0,0])
       cylinder(30,r=.9, $fn=30, center=true);
       
+  /* Disabled, I have a BLTouch
   //Z-end-stop screws
   translate([72,-6-10+3,44.5])
     rotate([-90,90,0]){
@@ -172,7 +173,7 @@ difference(){
       polyhole(30,1.6,center=false, $fn=30);
       cylinder(6, r=5.8/2/cos(30), center=false, $fn=6);
     }
-
+  */
     
   //oshw-Logo
   translate([10,10+2-1.5,32])
