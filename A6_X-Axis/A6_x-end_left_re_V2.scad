@@ -130,10 +130,10 @@ difference(){
   translate([62.75,-2.236,0])
     belt_hole();
   
-  //endStop Omron EE-SX670
-//  translate([18.3,4,0]) endstop_microswitch();
   //endStop microswitch 
-  translate([19.8,3.75,0]) endstop_EE_SX670();    
+  translate([18.3,4,0]) endstop_microswitch();
+  //endStop Omron EE-SX670
+  //translate([19.8,3.75,0]) endstop_EE_SX670();
   
   material_saving(5);  
    
