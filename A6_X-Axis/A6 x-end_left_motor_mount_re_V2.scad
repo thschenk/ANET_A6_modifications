@@ -117,8 +117,8 @@ module fancy (){
 difference(){
   // for Pulley GT2 20T high=28.386
   // for Pulley GT2 16T Motor high=28.386 + 1.27
-  high=28.386; text="20T";
-  //high=28.386-1.27; text="16T"; 
+  //high=28.386; text="20T";
+  high=28.386-1.27; text="16T";
   extra_space=.3;
   
   union(){
