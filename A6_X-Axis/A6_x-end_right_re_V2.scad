@@ -126,6 +126,10 @@ difference(){
     belthole_reinforcement_top();
    }    
   //bearing
+  // FIXME: one mounting screw now collides with the belt tensioner
+  // Doing rotate([90,50,0]) would fix that, but then the bearing will
+  // collide with the mounting screws of the lead screw nut, so this
+  // bearing probably needs to be placed one or 2mm higher too.
   translate([-41.5,16,27.5])
     rotate([90,0,0])
       // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:

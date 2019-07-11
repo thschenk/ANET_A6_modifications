@@ -27,6 +27,10 @@ module main(){
   }
 }
 
+// FIXME: It seems newer A6 models have X-rods that are a few mm
+// longer. As a workaround I drilled out the rod_screw facility on
+// the right carriage to allow the rods to fit. Probably better to
+// extend the rod_hole() and rod_screw() a bit.
 module rod_hole(){
   union(){
     translate([0,0,8.5])
