@@ -7,7 +7,7 @@ use <oshw-logo.scad>
 use <pushfit_hole_re.scad>
 use <polyhole_re.scad>
 use <A6_x-end_re_V2.scad>
-
+use <A6_x-end_right_belt_tensioner_V2.scad>
 /*
 module belt_hole(){  
   translate([-8.5/2,-16.5/2,0]){
@@ -120,35 +120,11 @@ module belthole_reinforcement_top(){
 
 difference(){
   union(){
-    mirror()
-      A6_X_end_left();
+    A6_X_end_basic_right();
     belthole_reinforcement();
     belthole_reinforcement_top();
    }    
-  //bearing
-  // FIXME: one mounting screw now collides with the belt tensioner
-  // Doing rotate([90,50,0]) would fix that, but then the bearing will
-  // collide with the mounting screws of the lead screw nut, so this
-  // bearing probably needs to be placed one or 2mm higher too.
-  translate([-41.5,16,27.5])
-    rotate([90,0,0])
-      // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
-      // 30-1.9-2.4-2.1 = 23.6, xEnd-Dicke= 26, Mutter bündig, Schraube 2.1 länger
-      // 25-1.9-2.4 = 20.7, xEnd-Dicke= 26, Mutter 2.9 tiefer, Schraube bündig
-      //bearing_LMEK8(30-1.9-2.4-2,5+22+4.0);
-      //bearing_LMEK8(25-1.9-2.4-.2,32);
-      bearing_LMH8(15-1-2.4);
-   
-  //lead_screw_nut
-  translate([-41.5,10,27.5+23])
-    rotate([90,0,0])
-      // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
-      // 25-3.5-2.4-1.5 = 17.6, xEnd-Dicke=20, Mutter bündig, Schraube 1.5 länger
-      // 22-3.5-2.4 = 16.1, xEnd-Dicke=20, Mutter 1.5 tiefer, Schraube bündig
-      //lead_screw_nut(9.5,25-3.5-2.4-0.5,21.6);
-      //lead_screw_nut(9.5,22-3.5-2.4-.2,26);
-      lead_screw_nut(9.5, 15-3.6-2.4);
-   
+
   //belt hole  
   translate([-62.75,-2.236,6])
     belt_hole();
@@ -176,7 +152,12 @@ difference(){
   translate([-40-5,-5,63])
     linear_extrude(height=2)
       text("Anet A6", size=6, font=":style=Bold", halign="left", valign="center"); 
+      
+  // translate([-100,0,-10]) cube([100,20,100]);
+  translate([-100,-20,50]) cube([100,40,100]);
 }
+
+*# translate([-62.5,-2,60]) rotate([0,90,0]) belt_tensioner();
 
 
 

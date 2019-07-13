@@ -83,10 +83,8 @@ module orientation_text(){
 }  
 
 
-//full part
-rotate([90,0,0]){
-  //orientation for printing
-  intersection(){  
+module belt_tensioner() {
+    intersection(){  
     difference(){
       main();  
       translate([0,0,-10])
@@ -103,3 +101,7 @@ rotate([90,0,0]){
         cylinder(40,r=11,$fn=50,center=true);
    }
 }
+
+//full part
+rotate([90,0,0]) belt_tensioner();
+  

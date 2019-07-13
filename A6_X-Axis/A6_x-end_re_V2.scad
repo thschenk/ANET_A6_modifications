@@ -7,26 +7,6 @@ use <pushfit_hole_re.scad>
 use <polyhole_re.scad>
 
 
-module main(){
-  union(){
-    //main
-    translate([0,0,0])
-      cylinder(64, r=10, center=false, $fn=100);
-    translate([80,0,0])
-      cylinder(64, r=10, center=false, $fn=100);
-    translate([0,-10,0])
-      cube([80,20,64],center=false);
-    //bearing top level
-    translate([41.5,10,27.5])
-      rotate([-90,0,0])
-        cylinder(6, r1=23, r2=17, center=false, $fn=100);
-    //bearing bottom level
-    translate([41.5,-10,27.5])
-      rotate([90,0,0])
-        cylinder(5.0, r1=15, r2=10, center=false, $fn=100);
-  }
-}
-
 // FIXME: It seems newer A6 models have X-rods that are a few mm
 // longer. As a workaround I drilled out the rod_screw facility on
 // the right carriage to allow the rods to fit. Probably better to
@@ -54,79 +34,136 @@ module rod_screw(){
       cylinder(30,r=.9, $fn=30, center=true);
 }
 
-// Bearing LMEK8LUU
-module bearing_LMEK8(thickness,bevel){
-  union(){
-    translate([0,0,-2.5])
-      intersection() {
-        cube([26,26,5], center=true);
-        cylinder(5,r=16, center=true, $fn=30);
-      }    
-    translate([0,0,-5])
-      //polyhole(45, 16/2, center = false);
-      pushfit_hole(45,16+.1,60,0.3);
-    for (i=[0:3])
-      rotate([0,0,45+i*90]){
-        translate([0,12,-5])
-          //cylinder(22+5+4.5+1+1, r=1.6, center=false, $fn=30);
-          polyhole(45, 1.6, center = false);
-        translate([0,12,thickness])
-          cylinder(40-thickness, r=5.8/2/cos(30), center=false, $fn=6);
-        translate([0,12,bevel])
-          cylinder(4, r1=5.8/2/cos(30), r2=5.8/2/cos(30)+4, , center=false, $fn=6);
-      }
-    }
-  }
 
 // Bearing LMH8LUU (A6 default)
-module bearing_LMH8(thickness){
-  union(){
-    // flange
-    translate([0,0,-2.5])
-      intersection() {
-        cube([32,21,5], center=true);
-        cylinder(5,r=32/2, center=true, $fn=30);
+module bearing_LMH8(thickness=15){
+    flange_height=5;
+    shaft_height = 45;
+    
+    difference() {
+      union() {
+          
+          // flange
+          translate([0,0,flange_height/2]) intersection() {
+            cube([32,20,flange_height], center=true);
+            cylinder(flange_height,r=32/2, center=true, $fn=30);
+          }
+          
+          // shaft
+          translate([0,0, -shaft_height]) cylinder(shaft_height, d=15+.1, center=false);
       }
-    // shaft
-    translate([0,0,-5])
-      pushfit_hole(45,15+.1,60,0.3);
+      
+          //screwholes
+          translate([12,0,flange_height-0.5])
+            cylinder(2, d=5, center=false, $fn=15);
+          
+          translate([-12,0,flange_height-0.5]) 
+            cylinder(2, d=5, center=false, $fn=15);
+       
+          translate([0,0,-50]) cylinder(60, d=8,  $fn=15);
+      }
+      
+
+      
     // screws
     for (i=[0:1])
       rotate([0,0,90+i*180]){
-        translate([0,12,-5])
-          //cylinder(22+5+4.5+1+1, r=1.6, center=false, $fn=30);
-          polyhole(45, 1.6, center = false); // all the way through
-        translate([0,12,thickness]) // hex nut
-          cylinder(40-thickness, r=5.8/2/cos(30), center=false, $fn=6);
-        translate([0,12,thickness + 3])
-          cylinder(45-thickness, r=7/2, center=false, $fn=6);
+        translate([0,12,-20])
+          cylinder(20, r=1.6, center = false, $fn=15); // all the way through
+        translate([0,12,-thickness-3]) // hex nut
+          cylinder(3, r=5.8/2/cos(30), center=false, $fn=6);
+      }
+    
+}
+
+module bearing_LMH8_hole(thickness=15, rotation=0){
+  flange_height=5;
+  shaft_height=45;
+  
+  nut_hole_height = 40;
+  d = 0.5;  
+    
+  rotate([0,0,rotation]) union(){
+    // flange
+    translate([0,0,flange_height/2])
+      intersection() {
+        cube([32,20+0.5, flange_height], center=true);
+        cylinder(flange_height, d=32+0.5, center=true, $fn=30);
+      }
+    // shaft
+    translate([0,0,-shaft_height])
+      rotate([0,0,-rotation]) 
+        pushfit_hole(shaft_height+d,15+.1,60,0.3);
+      
+    // screws
+    for (i=[0:1])
+      rotate([0,0,90+i*180]){
+        translate([0,12,-shaft_height])
+          rotate([0,0,-rotation]) polyhole(shaft_height+d, 1.6, center = false); // all the way through
+        //translate([0,12,thickness]) // hex nut
+        //  cylinder(40-thickness, r=5.8/2/cos(30), center=false, $fn=6);
+        translate([0,12,-(thickness+nut_hole_height)])
+          rotate([0,0,-rotation]) cylinder(nut_hole_height, r=7/2, center=false, $fn=6);
       }
     }
-  }
+}
 
-module lead_screw_nut(hole,thickness){
+
+
+module lead_screw_nut(thickness){
+  bolt_length=20;
+  height=14;
+  
   union(){
-    translate([0,0,-10]){
-      polyhole(22, 10.2/2, center = false);
-      pushfit_hole(22,10.2,60,0.3);
-      cylinder(10, r=22/2+1, center=false, $fn=30);
-      cylinder(50, r=hole/2, center=false, $fn=30);
-    }
+    
+    cylinder(4, d=22, center=false, $fn=30);
+      
+    translate([0,0,-height])
+      cylinder(height,d=10.2);
+      
+    
     for (i=[0:3])
       rotate([0,0,45+i*90]){
-        translate([0,8,-10])
-          //cylinder(45, r=1.6, center=false, $fn=30);
-          polyhole(50, 1.6, center = false);
-        translate([0,8,thickness])
+        translate([0,8,4])
+          cylinder(4, d=5,  center=false, $fn=15);
+          
+        translate([0,8,-bolt_length])
+          cylinder(bolt_length, r=1.6, center = false, $fn=15);
+          
+        translate([0,8,-thickness-3])
           // Hex Nut 5.5mm
-          cylinder(40-thickness, r=5.8/2/cos(30), center=false, $fn=6);
-        translate([0,8,thickness + 4])
-          cylinder(40-thickness, r=7/2,  center=false, $fn=6);
+          cylinder(3, r=5.8/2/cos(30), center=false, $fn=6);
+        
       }
     }
+}
+
+module lead_screw_nut_hole(thickness){
+  linear_axis_hole_diameter = 11;
+  shaft_length=50;
+  d=0.5;
+    
+  union(){
+    
+    cylinder(12, d=23, center=false, $fn=30);
+    
+    translate([0,0,-shaft_length]) rotate([0,0,90]) pushfit_hole(shaft_length+d,10.2, 60,0.3);
+    
+    for (i=[0:3]) {
+        rotation = 45+i*90;
+        rotate([0,0,rotation]){
+            translate([0,8,-shaft_length])
+                rotate([0,0,-rotation]) // make sure the hexagon-shape prints nicely
+                    polyhole(shaft_length+d, 1.6, center = false);
+            translate([0,8,-shaft_length])
+                rotate([0,0,-rotation])
+                    cylinder(shaft_length-thickness, r=7/2,  center=false, $fn=6);
+        }
+     }
   }
+}
   
-  module material_saving(depth=6){      
+module material_saving(depth=6){      
   difference(){
    translate([0,0-10-0.5,12])
       cube([29,depth+0.5,46]);   
@@ -150,58 +187,83 @@ module lead_screw_nut(hole,thickness){
   }
 }
 
-module A6_X_end_left()
-  difference(){
-  main();
-  // rod holes
-  rod_hole();
-  rod_screw();
-  translate([80,0,0]) {
-    rod_hole();
-    rod_screw();
-  }
+module A6_X_end_basic_left()
+    difference() {
+        
+        union() {
+            //main
+            rotate([90,0,90]) translate([0,0,0])
+              cylinder(64, r=10, center=false, $fn=100);
+            rotate([90,0,90]) translate([80,0,0])
+              cylinder(64, r=10, center=false, $fn=100);
+            rotate([90,0,90]) translate([0,-10,0])
+              cube([80,20,64],center=false);
+            //bearing top level
+            rotate([90,0,90])
+                translate([41.5,10,27.5])
+                  rotate([-90,0,0])
+                  cylinder(9, r1=23, r2=18, center=false, $fn=100);
+            //bearing bottom level
+            rotate([90,0,90])
+              translate([41.5,-10,27.5])
+                rotate([90,0,0])
+                  cylinder(5.0, r1=15, r2=10, center=false, $fn=100);
+        }
+  
+  
+        // rod holes
+        rotate([90,0,90]) {
+            rod_hole();
+            rod_screw();
+            translate([80,0,0]) {
+                rod_hole();
+                rod_screw();
+            }
+        }
+            
+      //bearing hole
+      //translate([41.5,16,27.5])
+      translate([27.5,41.5,16])
+        rotate([0,0,-90])
+          bearing_LMH8_hole(rotation=-40);
+
+      //lead_screw_nut hole
+      translate([27.5+23, 41.5, 8])
+        rotate([0,0,0])
+          lead_screw_nut_hole(14);
+      
+      rotate([90,0,90]) material_saving();
+      
+      
+   //   translate([50,-10,-30]) cube([100,100,100]);
+  
 }
 
 
-  
+module A6_X_end_basic_right() {
+    mirror([0,0,1]) A6_X_end_basic_left();
+}
+
  
 //test:
-  translate([-40,0,0])
-    bearing_LMH8(20,25);
-  translate([-70,0,0])
-   lead_screw_nut(9,30,32);
-  translate([-180,0,0])
-   main();  
-  
-//test:
-difference(){
-  A6_X_end_left();
-  
-  //bearing
-  translate([41.5,10+6,27.5])
-    rotate([90,0,0])
-      // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
-      // 30-1.9-2.4-2.1 = 23.6, xEnd-Dicke= 26, Mutter bündig, Schraube 2.1 länger
-      // 25-1.9-2.4 = 20.7, xEnd-Dicke= 26, Mutter 2.9 tiefer, Schraube bündig, !!vorsicht, Mutter auf Höhe Riemenspanner
-      //bearing_LMH8(30-1.9-2.4-1.6,5+22+4.0);
-      //bearing_LMH8(25-1.9-2.4,5+22+4.0);
-      // Default A6 M3 19mm screw (15mm thread length)
-      bearing_LMH8(15-1-2.4, 5+22+4.0);
+//translate([-80,0,0])   bearing_LMH8();
+//translate([-40,0,0])   bearing_LMH8_hole(rotation=45);
 
-  //lead_screw_nut
-  translate([41.5,10,27.5+23])
-    rotate([90,0,0])
-      // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
-      // 25-3.5-2.4-1.5 = 17.6,  xEnd-Dicke=20, Mutter bündig, Schraube 1.5 länger
-      // 22-3.5-2.4 = 16.1, xEnd-Dicke=20, Mutter 1.5 tiefer, Schraube bündig
-      //lead_screw_nut(9.5, 25-3.5-2.4-0.5, 21.6);
-      //lead_screw_nut(9.5, 22-3.5-2.4, 21.6);
-      // Default A6 M3 19mm screw (15mm thread length)
-      lead_screw_nut(9.5, 15-3.6-2.4, 10);
-  
-  material_saving();
-}
+// translate([-80,0,0])   lead_screw_nut(10);
+// translate([-40,0,0])   lead_screw_nut_hole(10);
 
 
+  
+  A6_X_end_basic_left();
+
+  *translate([27.5,41.5,16])
+    rotate([0,0,50])
+      bearing_LMH8();
+      
+  *translate([27.5+23, 41.5, 8])
+      lead_screw_nut(14);
+      
+      
+  // translate([0,0,200]) A6_X_end_basic_right();
 
 
