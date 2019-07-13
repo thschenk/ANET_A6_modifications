@@ -5,6 +5,7 @@
 
 use <pushfit_hole_re.scad>
 use <polyhole_re.scad>
+use <wing.scad>
 
 
 module rod_hole(){
@@ -151,6 +152,7 @@ module lead_screw_nut_hole(thickness){
             translate([0,8,-shaft_length])
                 rotate([0,0,-rotation]) // make sure the hexagon-shape prints nicely
                     polyhole(shaft_length+d, 1.6, center = false);
+            
             translate([0,8,-shaft_length])
                 rotate([0,0,-rotation])
                     cylinder(shaft_length-thickness, r=7/2,  center=false, $fn=6);
@@ -183,6 +185,11 @@ module material_saving(depth=6){
   }
 }
 
+
+
+
+
+
 module A6_X_end_basic_left()
 {    
     width = 67;
@@ -197,18 +204,29 @@ module A6_X_end_basic_left()
     
     rotate([90,0,90]) translate([0,-10,0])
       cube([80,20,width],center=false);
+    
     //bearing top level
     rotate([90,0,90])
         translate([41.5,10,27.5+3])
           rotate([-90,0,0])
           cylinder(9, r1=24, r2=18, center=false, $fn=100);
+    
     //bearing bottom level
     rotate([90,0,90])
       translate([41.5,-10,27.5+3])
         rotate([90,0,0])
           cylinder(5.0, r1=15, r2=10, center=false, $fn=100);
 
-  
+    // wing front
+    translate([width,-8,-4])
+        rotate([0,0,90])
+            wing(r=10, length=30, height=8);
+    
+    // wing back
+    translate([width,88,-4])
+        rotate([0,0,-90])
+            mirror([0,1,0])
+                wing(r=10, length=30, height=8);
 }
 
 
@@ -240,6 +258,14 @@ module A6_X_end_basic_left_cutout()
     rotate([90,0,90]) material_saving();
 
 
+    // cut wing front
+    translate([36,-20,-0.75])
+        cube([40, 20, 1.5]);
+
+    // cut wing back
+    translate([36,80,-0.75])
+        cube([40, 20, 1.5]);
+        
     *translate([-50,-100,-30]) cube([100,100,100]);
 }
 
@@ -267,7 +293,7 @@ difference() {
   A6_X_end_basic_left_cutout();
 }
 
-  # translate([27.5+3,41.5,16])
+  * translate([27.5+3,41.5,16])
     rotate([0,0,40])
       bearing_LMH8();
       
