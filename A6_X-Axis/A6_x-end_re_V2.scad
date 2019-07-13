@@ -10,7 +10,7 @@ use <polyhole_re.scad>
 module rod_hole(){
   union(){
     translate([0,0,8.5])
-      polyhole(64-8.5+1, 4, center = false);
+      polyhole(64-8.5+1+5, 4, center = false);
     translate([0,0,-1])
       cylinder(10.5, r=1.6, center=false, $fn=30);  
     translate([0,0,8.5])
@@ -187,62 +187,70 @@ module A6_X_end_basic_left()
 {    
     width = 67;
 
-    difference() {
-        
-        union() {
-            //main
-            rotate([90,0,90]) translate([0,0,0])
-              cylinder(width, r=10, center=false, $fn=100);
-            
-            rotate([90,0,90]) translate([80,0,0])
-              cylinder(width , r=10, center=false, $fn=100);
-            
-            rotate([90,0,90]) translate([0,-10,0])
-              cube([80,20,width],center=false);
-            //bearing top level
-            rotate([90,0,90])
-                translate([41.5,10,27.5+3])
-                  rotate([-90,0,0])
-                  cylinder(9, r1=24, r2=18, center=false, $fn=100);
-            //bearing bottom level
-            rotate([90,0,90])
-              translate([41.5,-10,27.5+3])
-                rotate([90,0,0])
-                  cylinder(5.0, r1=15, r2=10, center=false, $fn=100);
-        }
-  
-  
-        // rod holes
-        rotate([90,0,90]) {
-            rod_hole();
-            rod_screw();
-            translate([80,0,0]) {
-                rod_hole();
-                rod_screw();
-            }
-        }
-            
-      //bearing hole
-      //translate([41.5,16,27.5])
-      translate([27.5+3,41.5,16])
-        rotate([0,0,-90])
-          bearing_LMH8_hole(rotation=-40);
 
-      //lead_screw_nut hole
-      translate([27.5+3+23, 41.5, 8])
-        rotate([0,0,0])
-          lead_screw_nut_hole(14);
-      
-      rotate([90,0,90]) material_saving();
-      
-      
-        //   translate([50,-10,-30]) cube([100,100,100]);
-    }
+    //main
+    rotate([90,0,90]) translate([0,0,0])
+      cylinder(width, r=10, center=false, $fn=100);
+    
+    rotate([90,0,90]) translate([80,0,0])
+      cylinder(width , r=10, center=false, $fn=100);
+    
+    rotate([90,0,90]) translate([0,-10,0])
+      cube([80,20,width],center=false);
+    //bearing top level
+    rotate([90,0,90])
+        translate([41.5,10,27.5+3])
+          rotate([-90,0,0])
+          cylinder(9, r1=24, r2=18, center=false, $fn=100);
+    //bearing bottom level
+    rotate([90,0,90])
+      translate([41.5,-10,27.5+3])
+        rotate([90,0,0])
+          cylinder(5.0, r1=15, r2=10, center=false, $fn=100);
+
+  
 }
 
 
+
+module A6_X_end_basic_left_cutout()
+{    
+
+    // rod holes
+    rotate([90,0,90]) {
+        rod_hole();
+        rod_screw();
+        translate([80,0,0]) {
+            rod_hole();
+            rod_screw();
+        }
+    }
+        
+    //bearing hole
+    //translate([41.5,16,27.5])
+    translate([27.5+3,41.5,16])
+        rotate([0,0,-90])
+            bearing_LMH8_hole(rotation=-50);
+
+    //lead_screw_nut hole
+    translate([27.5+3+23, 41.5, 8])
+        rotate([0,0,0])
+            lead_screw_nut_hole(14);
+
+    rotate([90,0,90]) material_saving();
+
+
+    *translate([-50,-100,-30]) cube([100,100,100]);
+}
+
+
+
 module A6_X_end_basic_right() {
-    mirror([1,0,0]) A6_X_end_basic_left();
+    translate([0,0,0]) rotate([0,0,-180]) mirror([1,0,0]) A6_X_end_basic_left();
+}
+
+module A6_X_end_basic_right_cutout() {
+    translate([0,0,0]) rotate([0,0,-180]) mirror([1,0,0]) A6_X_end_basic_left_cutout();
 }
 
  
@@ -254,14 +262,16 @@ module A6_X_end_basic_right() {
 // translate([-40,0,0])   lead_screw_nut_hole(10);
 
 
-  
+difference() {  
   A6_X_end_basic_left();
+  A6_X_end_basic_left_cutout();
+}
 
-  *translate([27.5,41.5,16])
-    rotate([0,0,50])
+  # translate([27.5+3,41.5,16])
+    rotate([0,0,40])
       bearing_LMH8();
       
-  *translate([27.5+23, 41.5, 8])
+  *translate([27.5+3+23, 41.5, 8])
       lead_screw_nut(14);
       
       

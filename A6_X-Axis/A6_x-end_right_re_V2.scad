@@ -87,77 +87,78 @@ module belt_hole(){
       }
     }
     translate([0,0.635,0])
-      cylinder(20,d=3.5,center=true,$fn=50);
+      cylinder(20,d=4.5,center=true,$fn=50);
     translate([0,-0.635,0])
-      cylinder(20,d=3.5,center=true,$fn=50);
-    translate([0,0.635,0])
+      cylinder(20,d=4.5,center=true,$fn=50);
+    translate([0,0.635,1])
       cylinder(2.6*2,d=7,center=true,$fn=50);
-    translate([0,-0.635,0])
+    translate([0,-0.635,1])
       cylinder(2.6*2,d=7,center=true,$fn=50);
+    translate([0,0.635,-6])
+      cylinder(2,d=9.5,center=true,$fn=50);
+    translate([0,-0.635,-6])
+      cylinder(2,d=9.5,center=true,$fn=50);
   }
 }
     
 
 module belthole_reinforcement(){
   translate([-56.75,-10,0]){
-    cylinder(64,r=6.5, $fn=50, center=false);
+    cylinder(67,r=6.5, $fn=50, center=false);
     translate([-12,0,0])
-      cylinder(64,r=6.5, $fn=50, center=false);
+      cylinder(67,r=6.5, $fn=50, center=false);
     translate([-12,-6.5,0])
-      cube([12,13,64], center=false);
+      cube([12,13,67], center=false);
   }
 }
 
 module belthole_reinforcement_top(){
   translate([-52.25,10,0]){
-    cylinder(64,r=2, $fn=50, center=false);
+    cylinder(67,r=2, $fn=50, center=false);
     translate([-21,0,0])
-      cylinder(64,r=2, $fn=50, center=false);
+      cylinder(67,r=2, $fn=50, center=false);
     translate([-21,-2,0])
-      cube([21,4,64], center=false);
+      cube([21,4,67], center=false);
   }
 }
 
-difference(){
-  union(){
-    A6_X_end_basic_right();
-    belthole_reinforcement();
-    belthole_reinforcement_top();
-   }    
 
-  //belt hole  
-  translate([-62.75,-2.236,6])
-    belt_hole();
-  translate([-62.75,-2.236,61.5])
-    belt_hole_bevel();
-  translate([-62.75,-2.236+0.635,63])
-    belt_hole_bevel2();
+module A6_X_end_right() {
+    difference(){
+        union() {
+            A6_X_end_basic_right();
+            rotate([90,0,90]) belthole_reinforcement();
+            rotate([90,0,90]) belthole_reinforcement_top();
+        }
 
-  //material savings
-  mirror()
-    material_saving(5);  
+        A6_X_end_basic_right_cutout();  
 
-  //oshw-Logo
-  translate([-10,10+2-1.5,32])
-    rotate([90,-90,0])
-      linear_extrude(height=2)
-        oshw_logo_2d(15);
-  translate([-40,4,64-1.5])
-    linear_extrude(height=2)
-          oshw_logo_2d(10);
-  translate([-40,0,-0.5])
-    linear_extrude(height=2)
-          oshw_logo_2d(14);
-  //Anet A6 Text
-  translate([-40-5,-5,63])
-    linear_extrude(height=2)
-      text("Anet A6", size=6, font=":style=Bold", halign="left", valign="center"); 
+      //belt hole  
+      rotate([90,0,90]) translate([-62.75,-2.236,6])
+        belt_hole();
+      rotate([90,0,90]) translate([-62.75,-2.236,61.5])
+        belt_hole_bevel();
+      rotate([90,0,90]) translate([-62.75,-2.236+0.635,63])
+        belt_hole_bevel2();
+
+         
       
-  // translate([-100,0,-10]) cube([100,20,100]);
-  translate([-100,-20,50]) cube([100,40,100]);
+        
+      //translate([-10,-90,0]) cube([100,100,100]); //horizontal cut
+    }
+    
 }
 
-*# translate([-62.5,-2,60]) rotate([0,90,0]) belt_tensioner();
+
+A6_X_end_right();
+
+* rotate([90,0,90]) translate([-62.5,-2,60]) rotate([0,90,0]) belt_tensioner();
 
 
+* translate([27.5+3,-41.5,16])
+    rotate([0,0,-40])
+        bearing_LMH8();
+  
+* translate([27.5+3+23, -41.5, 8])
+    lead_screw_nut(14);
 

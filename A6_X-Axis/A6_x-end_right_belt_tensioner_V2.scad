@@ -40,16 +40,16 @@ module screw_hole(){
   polyhole(25,1.45,center=false);
   // Hex Nut 5.5mm
   translate([0,0,20-2.6])
-  cylinder(10, r=5.8/2*1.155, center=false, $fn=6);
+   cylinder(10, r=5.8/2*1.155, center=false, $fn=6);
 }
 
 module screw_hole_2(){
   // hexagon head 5.5mm
   translate([0,0,-5])
-    cylinder(5, r=5.8/2*1.155, center=false, $fn=6);  
-  translate([0,0,-4.99])
-    cylinder(5, r=3, center=false, $fn=30);
-  polyhole(15,1.5,center=false);
+    cylinder(5, r=(7+0.3)/2*1.155, center=false, $fn=6);  
+  //translate([0,0,-4.99])
+  //  cylinder(5, r=3, center=false, $fn=30);
+  #translate([0,0,-1]) polyhole(16,2,center=false);
 }
 
 module fancy(){
