@@ -94,10 +94,10 @@ module belt_hole(){
       cylinder(2.6*2,d=7,center=true,$fn=50);
     translate([0,-0.635,1])
       cylinder(2.6*2,d=7,center=true,$fn=50);
-    translate([0,0.635,-6])
-      cylinder(2,d=9.5,center=true,$fn=50);
-    translate([0,-0.635,-6])
-      cylinder(2,d=9.5,center=true,$fn=50);
+    //translate([0,0.635,-6])
+     // cylinder(2,d=9.5,center=true,$fn=50);
+    //translate([0,-0.635,-6])
+      //cylinder(2,d=9.5,center=true,$fn=50);
   }
 }
     
@@ -136,13 +136,11 @@ module A6_X_end_right() {
       //belt hole  
       rotate([90,0,90]) translate([-62.75,-2.236,6])
         belt_hole();
-      rotate([90,0,90]) translate([-62.75,-2.236,61.5])
+      rotate([90,0,90]) translate([-62.75,-2.236,61.5+3])
         belt_hole_bevel();
-      rotate([90,0,90]) translate([-62.75,-2.236+0.635,63])
+      rotate([90,0,90]) translate([-62.75,-2.236+0.635,63+3])
         belt_hole_bevel2();
 
-         
-      
         
       //translate([-10,-90,0]) cube([100,100,100]); //horizontal cut
     }
@@ -152,13 +150,13 @@ module A6_X_end_right() {
 
 A6_X_end_right();
 
-* rotate([90,0,90]) translate([-62.5,-2,60]) rotate([0,90,0]) belt_tensioner();
+% rotate([90,0,90]) translate([-62.5,-2,60]) rotate([0,90,0]) belt_tensioner();
 
 
-* translate([27.5+3,-41.5,16])
+% translate([27.5+3,-41.5,16])
     rotate([0,0,-40])
         bearing_LMH8();
   
-* translate([27.5+3+23, -41.5, 8])
+% translate([27.5+3+23, -41.5, 8])
     lead_screw_nut(14);
 

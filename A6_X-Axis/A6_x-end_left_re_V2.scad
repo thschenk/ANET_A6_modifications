@@ -35,7 +35,7 @@ module belt_hole(){
     cube([8.5,16.5,80], center=false);
     translate([0,0,-1])
       belt_hole_bevel();
-    translate([08.5,0,64.5])
+    translate([08.5,0,64.5+3])
       rotate([0,180,0])
         translate([0,0,0])
           belt_hole_bevel();
@@ -44,11 +44,11 @@ module belt_hole(){
 
 module belthole_reinforcement(){
   translate([58,-10,0]){
-    cylinder(64,r=5, $fn=50, center=false);
+    cylinder(67,r=5, $fn=50, center=false);
     translate([9.5,0,0])
-      cylinder(64,r=5, $fn=50, center=false);
-    translate([5,0,32])
-      cube([9.5,10,64], center=true);
+      cylinder(67,r=5, $fn=50, center=false);
+    translate([5,0,32+1.5])
+      cube([9.5,10,67], center=true);
   }
 }
 
@@ -102,65 +102,50 @@ module endstop_microswitch(){
 
 difference(){
   union(){
-    A6_X_end_left();
-    belthole_reinforcement();
+    A6_X_end_basic_left();
+    rotate([90,0,90]) belthole_reinforcement();
   }
     
-  //bearing
-  translate([41.5,16,27.5])
-    rotate([90,-50,0])
-      // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
-      // 30-1.9-2.4-2.1 = 23.6, xEnd-Dicke= 26, Mutter bündig, Schraube 2.1 länger
-      // 25-1.9-2.4 = 20.7, xEnd-Dicke= 26, Mutter 2.9 tiefer, Schraube bündig, !!vorsicht, Mutter auf Höhe Riemenspanner
-      //bearing_LMH8(30-1.9-2.4-1.6,5+22+4.0);
-      //bearing_LMEK8(25-1.9-2.4,5+22+4.0);
-      bearing_LMH8(15-1-2.4);
-   
-  //lead_screw_nut
-  translate([41.5,5,27.5+23])
-    rotate([90,0,0])
-      // Schraubenlänge-Materialstärke(Lager)-Mutter-Ueberstand:
-      // 25-3.5-2.4-1.5 = 17.6, xEnd-Dicke=20, Mutter bündig, Schraube 1.5 länger
-      // 22-3.5-2.4 = 16.1, xEnd-Dicke=20, Mutter 1.5 tiefer, Schraube bündig
-      //lead_screw_nut(9.5,25-3.5-2.4-0.5,21.6);
-      //lead_screw_nut(9.5,22-3.5-2.4-.2,26);
-     % lead_screw_nut(9.5, 15-3.6-2.4);
+  A6_X_end_basic_left_cutout();  
+
+  //translate([-1,-1,0]) cube([100,100,100]);
 
   //belt hole  
-  translate([62.75,-2.236,0])
+  rotate([90,0,90]) translate([62.75,-2.236,0])
     belt_hole();
   
   //endStop microswitch 
-  translate([18.3,4,0]) endstop_microswitch();
+  rotate([90,0,90]) translate([18.3,4,0]) endstop_microswitch();
   //endStop Omron EE-SX670
   //translate([19.8,3.75,0]) endstop_EE_SX670();
   
-  material_saving(5);  
-   
-  //motorholder_holes centering
-  translate([16+27/2,0,-0.1]) {
-    cylinder(5.1,r1=5.1, r2=0, $fn=30, center=false);
-    //cylinder(8.1,r=2.6, $fn=30, center=true);
+  
+  rotate([90,0,90]) { 
+      //motorholder_holes centering
+      translate([16+27/2,0,-0.1]) {
+        cylinder(5.1,r1=5.1, r2=0, $fn=30, center=false);
+        //cylinder(8.1,r=2.6, $fn=30, center=true);
+      }
+      //motorholder_holes screws
+      translate([16,0,-0.1])
+        polyhole(15.1,1.6,center=false);
+      translate([16+27,0,-0.1])
+        polyhole(15.1,1.6,center=false);
+      //motorholder_holes screw nuts
+      translate([16,-10+3.3,1.6+7])
+        rotate([90,0,0])
+          cube([5.8,3.2,20],center=true);
+      translate([16+27,-10+3.3,1.6+7])
+        rotate([90,0,0])
+          cube([5.8,3.2,20],center=true);
+      translate([16,0,1.6+7])
+        rotate([90,0,0])
+          cylinder(30,r=.9, $fn=30, center=true);
+      translate([16+27,0,1.6+7])
+        rotate([90,0,0])
+          cylinder(30,r=.9, $fn=30, center=true);
   }
-  //motorholder_holes screws
-  translate([16,0,-0.1])
-    polyhole(15.1,1.6,center=false);
-  translate([16+27,0,-0.1])
-    polyhole(15.1,1.6,center=false);
-  //motorholder_holes screw nuts
-  translate([16,-10+3.3,1.6+7])
-    rotate([90,0,0])
-      cube([5.8,3.2,20],center=true);
-  translate([16+27,-10+3.3,1.6+7])
-    rotate([90,0,0])
-      cube([5.8,3.2,20],center=true);
-  translate([16,0,1.6+7])
-    rotate([90,0,0])
-      cylinder(30,r=.9, $fn=30, center=true);
-  translate([16+27,0,1.6+7])
-    rotate([90,0,0])
-      cylinder(30,r=.9, $fn=30, center=true);
-      
+  
   /* Disabled, I have a BLTouch
   //Z-end-stop screws
   translate([72,-6-10+3,44.5])
@@ -175,18 +160,4 @@ difference(){
     }
   */
     
-  //oshw-Logo
-  translate([10,10+2-1.5,32])
-      rotate([90,90,0])
-        linear_extrude(height=2)
-          oshw_logo_2d(15);
-  translate([40,4,64-1.5])
-      rotate([0,0,0])
-        linear_extrude(height=2)
-          oshw_logo_2d(10);
-  //Anet A6 Text
-  translate([40+5,-5,63])
-      rotate([0,0,0])
-        linear_extrude(height=2)
-          text("Anet A6", size=6, font=":style=Bold", halign="right", valign="center");  
 }
