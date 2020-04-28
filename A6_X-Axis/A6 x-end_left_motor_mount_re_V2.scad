@@ -83,12 +83,12 @@ module motor_mount_screws(high=28.386){
       cylinder(5,r=3.1,$fn=30);
   }
   //for endStop cable
-  translate([high+3,10,43+0.9])  
-    rotate([90,0,0])
-      cylinder(20,r=3,$fn=30);
-  translate([high+3,6,43+0.9])  
-    rotate([-90,0,0])
-      cylinder(3,r1=3,r2=6,$fn=30);
+//  #translate([high+3,10,43+0.9])  
+//    rotate([90,0,0])
+//      cylinder(20,r=3,$fn=30);
+//  #translate([high+3,6,43+0.9])  
+//    rotate([-90,0,0])
+//      cylinder(3,r1=3,r2=6,$fn=30);
       
   //top beavel
   translate([15+high,0,0])
@@ -113,28 +113,30 @@ module fancy (){
   
 }
 
+module motor_mount_total() {
+    difference(){
+      // for Pulley GT2 20T high=28.386
+      // for Pulley GT2 16T Motor high=28.386 + 1.27
+      //high=28.386; text="20T";
+      high=28.386-1.27; text="16T";
+      extra_space=.3;
+      
+      union(){
+        motor_mount();
+        motor_mount_adjustment(high,extra_space);
+        //Anet A6 Text  
+      }
+      motor_mount_screws(high);
+      fancy();
+      
+      //Text
+      translate([2,28.15,0])
+        rotate([0,0,-90])
+          mirror([1,0,0])
+            linear_extrude(height=1.5)
+              text(text, size=8, font=":style=Bold", halign="center", valign="bottom");
+      
+    }
+};
 
-difference(){
-  // for Pulley GT2 20T high=28.386
-  // for Pulley GT2 16T Motor high=28.386 + 1.27
-  //high=28.386; text="20T";
-  high=28.386-1.27; text="16T";
-  extra_space=.3;
-  
-  union(){
-    motor_mount();
-    motor_mount_adjustment(high,extra_space);
-    //Anet A6 Text  
-  }
-  motor_mount_screws(high);
-  fancy();
-  
-  //Text
-  translate([2,28.15,0])
-    rotate([0,0,-90])
-      mirror([1,0,0])
-        linear_extrude(height=1.5)
-          text(text, size=8, font=":style=Bold", halign="center", valign="bottom");
-  
-}
-
+motor_mount_total();

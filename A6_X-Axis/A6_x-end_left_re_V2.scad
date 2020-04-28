@@ -7,6 +7,7 @@ use <oshw-logo.scad>
 use <pushfit_hole_re.scad>
 use <polyhole_re.scad>
 use <A6_x-end_re_V2.scad>
+use <A6 x-end_left_motor_mount_re_V2.scad>
 
 
 module belt_hole_bevel(){
@@ -83,9 +84,19 @@ module endstop_microswitch(){
     cube([18.4,7,20],center=true);
   translate([0,0,10+64-10.2])
     cube([20.4,7,20],center=true);
-  //end-stop cable hole 
-  translate([-18.3+9.1,-1,0])
-    cylinder(52,r=2.5, $fn=30, center=false);
+  
+    //end-stop cable hole
+   translate([6,0,0]) rotate([0,-6,0])
+      union() {
+          translate([-18.3+9.1,-1,38])
+            cylinder(51-40,r=2, $fn=20, center=false);
+          
+          translate([-18.3+9.1,-21,38])
+                rotate([0,90,0])
+                    rotate_extrude(angle=90, $fn=60)
+                        translate([20, 0, 0])
+                            circle(r = 2, $fn=20);
+      }
   //end-stop microswitch screws
   translate([-4.75,8-1.3,56.5])
     rotate([90,0,0]){
@@ -105,7 +116,16 @@ difference(){
     A6_X_end_basic_left();
     rotate([90,0,90]) belthole_reinforcement();
   }
-    
+
+
+   // cut top
+  //translate([-1,-30,3.5]) cube([100,140,100]);
+
+   // cut left
+   //translate([-1,-110.4,-50]) cube([100,140,100]);
+  //translate([-1,-131,-50]) cube([100,140,100]);
+
+  
   A6_X_end_basic_left_cutout();  
 
   //translate([-1,-1,0]) cube([100,100,100]);
@@ -161,3 +181,8 @@ difference(){
   */
     
 }
+
+
+%translate([0,52.7,-27.2])
+    rotate([90,0,0]) rotate([0,0,90])
+        motor_mount_total();
